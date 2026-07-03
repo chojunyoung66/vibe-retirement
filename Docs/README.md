@@ -18,6 +18,7 @@
 8. Latpeed의 은퇴 현금흐름 설계법 페이지를 참고하여 한 페이지 요약, 시나리오, 인출 전략 관점을 추가했습니다.
 9. IRP, 연금저축, 개인연금 등 복수 연금계좌의 인출 전략과 절세 검토 기능을 추가했습니다.
 10. Docs 전체에서 Agent가 추출한 기능·아이디어를 `07-feature-list.md`로 정리했습니다.
+11. 은퇴현금 설계센터 MVP 제품 스펙 v1을 `08_product_spec_v1.md`로 정리했습니다.
 
 ## 2. 문서 목록
 
@@ -49,6 +50,9 @@
 - [04_three_pillar_pension_structure.md](./04_three_pillar_pension_structure.md)
   - 국민연금, 퇴직연금, 개인연금으로 구성되는 3층 연금 구조 정의
 
+- [08_product_spec_v1.md](./08_product_spec_v1.md)
+  - 은퇴현금 설계센터 MVP 제품 스펙 v1
+
 ## 3. 권장 읽기 순서
 
 1. `00_deep_research_review_report.md`
@@ -59,6 +63,7 @@
 6. `05_reference_latpeed_cashflow_design.md`
 7. `06_multi_account_pension_withdrawal_tax_strategy.md`
 8. `07-feature-list.md`
+9. `08_product_spec_v1.md`
 
 ## 4. 현재 권장 MVP 범위
 
@@ -111,6 +116,8 @@
 - F-11 대시보드는 한 페이지 요약 결과를 우선합니다.
 - F-09와 F-10은 기본, 생활비 증가, 수익률 하락 등 시나리오 비교를 제공합니다.
 - 복수 연금계좌 인출 전략은 실제 세액 확정이 아니라 비교와 검토 지원 목적으로 제공합니다.
+- F-11은 모바일에서는 요약 리포트를 우선하고, 상세 내용은 PDF 저장 후 확인할 수 있게 합니다.
+- 로컬 저장/불러오기는 MVP에서 브라우저 localStorage 기반으로 처리하며, 이메일과 비밀번호 입력을 요구합니다. 단, 서버 계정 저장이 아님을 명확히 고지해야 합니다.
 
 ## 7. 다음 추천 작업
 
@@ -123,3 +130,4 @@
 7. F-11에 한 페이지 요약 결과 화면을 우선 구현한다.
 8. 복수 연금계좌 입력 모델과 인출 전략 비교 기능을 설계한다.
 9. `07-feature-list.md`를 기준으로 기능 누락 여부를 점검한다.
+10. `08_product_spec_v1.md`를 기준으로 MVP 구현 이슈와 화면/계산/저장 정책을 분리한다.
