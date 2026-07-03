@@ -17,6 +17,7 @@
 7. 3층 연금 구조에 국민연금을 1층 공적연금으로 명확히 추가했습니다.
 8. Latpeed의 은퇴 현금흐름 설계법 페이지를 참고하여 한 페이지 요약, 시나리오, 인출 전략 관점을 추가했습니다.
 9. IRP, 연금저축, 개인연금 등 복수 연금계좌의 인출 전략과 절세 검토 기능을 추가했습니다.
+10. Docs 전체에서 Agent가 추출한 기능·아이디어를 `07-feature-list.md`로 정리했습니다.
 
 ## 2. 문서 목록
 
@@ -33,6 +34,9 @@
 
 - [06_multi_account_pension_withdrawal_tax_strategy.md](./06_multi_account_pension_withdrawal_tax_strategy.md)
   - 복수 IRP, 연금저축, 개인연금 계좌의 인출 순서와 절세 검토 기준
+
+- [07-feature-list.md](./07-feature-list.md)
+  - Docs 전체에서 Agent가 추출한 기능·아이디어 전체 목록
 
 ### 2.2. 설계 문서
 
@@ -54,6 +58,7 @@
 5. `04_three_pillar_pension_structure.md`
 6. `05_reference_latpeed_cashflow_design.md`
 7. `06_multi_account_pension_withdrawal_tax_strategy.md`
+8. `07-feature-list.md`
 
 ## 4. 현재 권장 MVP 범위
 
@@ -117,3 +122,4 @@
 6. F-01, F-09, F-11 화면에 3층 연금 요약을 반영한다.
 7. F-11에 한 페이지 요약 결과 화면을 우선 구현한다.
 8. 복수 연금계좌 입력 모델과 인출 전략 비교 기능을 설계한다.
+9. `07-feature-list.md`를 기준으로 기능 누락 여부를 점검한다.
