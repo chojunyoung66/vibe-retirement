@@ -96,6 +96,7 @@ export type MonthlyCashflowResult = {
   monthlyIncome: number;
   monthlyExpense: number;
   monthlyNetCashflow: number;
+  assetDrawdown: number;
   beginningAssetBalance: number;
   endingAssetBalance: number;
   healthInsurancePremium: number;
@@ -120,6 +121,8 @@ export type ReportSummary = {
   adjustmentEffect?: number;
   depletionStatus: AssetDepletionStatus;
   warnings: string[];
+  goalAchievementRate?: number;
+  targetRetirementAsset?: number;
 };
 
 export type ScenarioResult = {
@@ -158,6 +161,7 @@ export const DEFAULT_SCENARIO: ScenarioAssumption = {
   simulationStartMonth: new Date().getMonth() + 1,
   simulationYears: 30,
   useFourPercentWithdrawalRule: false,
+  annualWithdrawalLimitRate: 0.04,
   maintainHealthInsuranceDependentStatus: true,
   usePensionAnnualCapMode: false,
 };

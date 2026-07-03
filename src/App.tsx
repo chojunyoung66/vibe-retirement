@@ -42,6 +42,13 @@ function buildSummary(input: UserInput, scenarios: ScenarioResult[]): ReportSumm
 
   const depletion = analyzeDepletion(base?.cashflows ?? [], initialAsset);
 
+  const targetRetirementAsset =
+    input.goal.monthlyLivingExpense * input.scenario.simulationYears * 12;
+  const goalAchievementRate =
+    targetRetirementAsset > 0
+      ? Math.min(1.5, Math.max(0, initialAsset / targetRetirementAsset))
+      : undefined;
+
   const warnings: string[] = [...hiEstimate.warnings];
 
   if (firstMonth && firstMonth.monthlyNetCashflow < 0) {
@@ -54,18 +61,11 @@ function buildSummary(input: UserInput, scenarios: ScenarioResult[]): ReportSumm
     warnings.push(`${depletion.depletionAge}세경 자산이 고갈될 것으로 예상됩니다.`);
   }
 
-  if (
-    input.scenario.useFourPercentWithdrawalRule &&
-    firstMonth &&
-    firstMonth.monthlyNetCashflow < 0
-  ) {
-    const annualWithdrawal = Math.abs(firstMonth.monthlyNetCashflow) * 12;
-    const fourPctLimit = initialAsset * 0.04;
-    if (annualWithdrawal > fourPctLimit) {
-      warnings.push(
-        `연간 인출액이 자산의 4%를 초과합니다. (인출 ${(annualWithdrawal / 10000).toFixed(0)}만원 vs 한도 ${(fourPctLimit / 10000).toFixed(0)}만원)`,
-      );
-    }
+  if (input.scenario.useFourPercentWithdrawalRule) {
+    const rate = input.scenario.annualWithdrawalLimitRate ?? 0.04;
+    warnings.push(
+      `4% 인출 규칙이 적용됩니다. 월 인출액이 초기 금융자산의 ${(rate * 100).toFixed(0)}%÷12로 제한됩니다.`,
+    );
   }
 
   return {
@@ -75,6 +75,8 @@ function buildSummary(input: UserInput, scenarios: ScenarioResult[]): ReportSumm
     estimatedHealthInsurancePremium: hiEstimate.monthlyPremium,
     depletionStatus: depletion.status,
     warnings,
+    goalAchievementRate,
+    targetRetirementAsset: targetRetirementAsset > 0 ? targetRetirementAsset : undefined,
   };
 }
 

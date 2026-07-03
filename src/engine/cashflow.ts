@@ -21,20 +21,23 @@ export function calculateMonthlyCashflows(input: UserInput): MonthlyCashflowResu
   let currentFinancialAsset =
     asset.cashAsset + asset.financialAsset + asset.pensionAccount + asset.otherAsset;
 
-  let startYear = scenario.simulationStartYear;
-  let startMonth = scenario.simulationStartMonth;
+  const initialFinancialAsset = currentFinancialAsset;
+
+  const startYear = scenario.simulationStartYear;
+  const startMonth = scenario.simulationStartMonth;
 
   for (let i = 0; i < totalMonths; i++) {
     const year = startYear + Math.floor((startMonth - 1 + i) / 12);
     const month = ((startMonth - 1 + i) % 12) + 1;
     const yearsElapsed = i / 12;
-    const age = profile.currentAge + yearsElapsed;
+    // 시뮬레이션은 은퇴 시점부터 시작 — 모든 수입·지출은 은퇴 후 값을 기준으로 입력
+    const age = profile.retirementAge + yearsElapsed;
 
     const growthFactor = Math.pow(1 + scenario.livingExpenseGrowthRate, yearsElapsed);
     const medicalGrowthFactor = Math.pow(1 + scenario.medicalExpenseGrowthRate, yearsElapsed);
 
-    const nationalPensionActive = age >= profile.retirementAge + (income.nationalPensionStartAge - profile.retirementAge);
-    const nationalPensionIncome = nationalPensionActive ? income.nationalPension : 0;
+    const nationalPensionIncome =
+      age >= income.nationalPensionStartAge ? income.nationalPension : 0;
 
     const monthlyIncome =
       nationalPensionIncome +
@@ -74,9 +77,17 @@ export function calculateMonthlyCashflows(input: UserInput): MonthlyCashflowResu
     const monthlyReturn = currentFinancialAsset * monthlyReturnRate;
 
     const beginningBalance = currentFinancialAsset;
-    const endingBalance = beginningBalance + monthlyNetCashflow + monthlyReturn;
 
-    currentFinancialAsset = Math.max(endingBalance, 0);
+    let assetDrawdown: number;
+    if (scenario.useFourPercentWithdrawalRule && monthlyNetCashflow < 0) {
+      const rate = scenario.annualWithdrawalLimitRate ?? 0.04;
+      assetDrawdown = -Math.min(Math.abs(monthlyNetCashflow), initialFinancialAsset * rate / 12);
+    } else {
+      assetDrawdown = monthlyNetCashflow;
+    }
+
+    const endingBalance = Math.max(0, beginningBalance + assetDrawdown + monthlyReturn);
+    currentFinancialAsset = endingBalance;
 
     results.push({
       year,
@@ -85,6 +96,7 @@ export function calculateMonthlyCashflows(input: UserInput): MonthlyCashflowResu
       monthlyIncome,
       monthlyExpense,
       monthlyNetCashflow,
+      assetDrawdown,
       beginningAssetBalance: beginningBalance,
       endingAssetBalance: endingBalance,
       healthInsurancePremium: hiPremium,

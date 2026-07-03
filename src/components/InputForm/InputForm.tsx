@@ -64,14 +64,25 @@ type Props = {
 export default function InputForm({ onSubmit, initialData }: Props) {
   const [step, setStep] = useState(0);
   const [data, setData] = useState<UserInput>(initialData ?? DEFAULT_INPUT);
-  const [maintainDependent, setMaintainDependent] = useState(
-    initialData?.scenario.maintainHealthInsuranceDependentStatus ?? true,
-  );
 
   const prev = () => setStep(s => Math.max(0, s - 1));
+
   const next = () => {
-    if (step < STEP_LABELS.length - 1) setStep(s => s + 1);
-    else onSubmit(data);
+    if (step < STEP_LABELS.length - 1) {
+      setStep(s => s + 1);
+      return;
+    }
+    if (data.profile.retirementAge <= data.profile.currentAge) {
+      alert('은퇴 예정 나이는 현재 나이보다 커야 합니다.');
+      setStep(0);
+      return;
+    }
+    if (data.goal.simulationYears < 1) {
+      alert('시뮬레이션 기간은 1년 이상이어야 합니다.');
+      setStep(1);
+      return;
+    }
+    onSubmit(data);
   };
 
   const progress = ((step + 1) / STEP_LABELS.length) * 100;
@@ -112,8 +123,6 @@ export default function InputForm({ onSubmit, initialData }: Props) {
         <ScenarioInput
           value={data.scenario}
           onChange={v => setData(d => ({ ...d, scenario: v }))}
-          maintainDependent={maintainDependent}
-          onMaintainDependentChange={setMaintainDependent}
         />
       )}
 

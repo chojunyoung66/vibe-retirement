@@ -29,7 +29,14 @@ export function estimateHealthInsurance(
     (income.nationalPension + income.retirementPension + income.privatePension) * 12;
   const financialIncome = income.financialIncome * 12;
 
-  if (scenario.maintainHealthInsuranceDependentStatus) {
+  const lossY = scenario.dependentStatusLossYear;
+  const lossM = scenario.dependentStatusLossMonth;
+  const lossActive =
+    lossY != null &&
+    (year > lossY || (year === lossY && month >= (lossM ?? 1)));
+  const effectiveDependent = scenario.maintainHealthInsuranceDependentStatus && !lossActive;
+
+  if (effectiveDependent) {
     const warnings: string[] = [];
     let risk: 'low' | 'medium' | 'high' = 'low';
 
@@ -83,6 +90,12 @@ export function estimateHealthInsurance(
     '지역가입자 전환 가정으로 건강보험료가 산정됩니다.',
     '연금소득의 50%를 소득월액으로 반영합니다.',
   ];
+
+  if (lossActive && scenario.maintainHealthInsuranceDependentStatus) {
+    lossDependentWarnings.unshift(
+      `${lossY!}년 ${lossM ?? 1}월부터 피부양자 자격이 상실되어 지역가입자로 전환됩니다.`,
+    );
+  }
 
   if (asset.realEstate > 0) {
     lossDependentWarnings.push('부동산 재산은 1억원 기본공제 후 간이 점수 환산을 적용합니다.');
